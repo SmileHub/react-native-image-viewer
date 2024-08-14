@@ -15,7 +15,8 @@ import {
   View,
   ViewStyle
 } from 'react-native';
-import ImageZoom from 'react-native-image-pan-zoom';
+// import ImageZoom from 'react-native-image-pan-zoom';//deprecated
+import { ImageZoom } from '@likashefqet/react-native-image-zoom';
 import styles from './image-viewer.style';
 import { IImageInfo, IImageSize, Props, State } from './image-viewer.type';
 
@@ -601,9 +602,35 @@ export default class ImageViewer extends React.Component<Props, State> {
           return (
             // @ts-ignore - because typescript complains ImageZoom not supporting children!
             // todo: lots of refactoring to move away from ImageZoom
+            // <ImageZoom
+            //   key={index}
+            //   ref={el => (this.imageRefs[index] = el)}
+            //   cropWidth={this.width}
+            //   cropHeight={this.height}
+            //   maxOverflow={this.props.maxOverflow}
+            //   horizontalOuterRangeOffset={this.handleHorizontalOuterRangeOffset}
+            //   responderRelease={this.handleResponderRelease}
+            //   onMove={this.props.onMove}
+            //   onLongPress={this.handleLongPressWithIndex.get(index)}
+            //   onClick={this.handleClick}
+            //   onDoubleClick={this.handleDoubleClick}
+            //   imageWidth={width}
+            //   imageHeight={height}
+            //   enableSwipeDown={this.props.enableSwipeDown}
+            //   swipeDownThreshold={this.props.swipeDownThreshold}
+            //   onSwipeDown={this.handleSwipeDown}
+            //   panToMove={!this.state.isShowMenu}
+            //   pinchToZoom={this.props.enableImageZoom && !this.state.isShowMenu}
+            //   enableDoubleClickZoom={this.props.enableImageZoom && !this.state.isShowMenu}
+            //   doubleClickInterval={this.props.doubleClickInterval}
+            //   minScale={this.props.minScale}
+            //   maxScale={this.props.maxScale}
+            // >
+            //   {this!.props!.customRender!(image.props)}
+            // </ImageZoom>
             <ImageZoom
               key={index}
-              ref={el => (this.imageRefs[index] = el)}
+              ref={this.imageRefs[index]}
               cropWidth={this.width}
               cropHeight={this.height}
               maxOverflow={this.props.maxOverflow}

@@ -130,5 +130,5 @@ npm start
 Then, scan the QR, use your [expo app](https://expo.io./).
 
 ### Dependence
-
-Depend on `react-native-image-pan-zoom`: https://github.com/ascoders/react-native-image-zoom
+* added dependency:     "@likashefqet/react-native-image-zoom": https://github.com/likashefqet/react-native-image-zoom
+* removed dependency: `react-native-image-pan-zoom`: https://github.com/ascoders/react-native-image-zoom (no updates since 2020 May)
