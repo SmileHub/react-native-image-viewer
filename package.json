@@ -2,10 +2,13 @@
   "name": "react-native-image-zoom-viewer",
   "version": "3.1.0",
   "description": "react native image viewer",
-  "main": "built/index.js",
+  "main": "src/index.ts",
   "types": "built/index.d.ts",
   "scripts": {
     "prepare": "rimraf built && mkdir built && tsc",
+    "pack": "rimraf react-native-image-zoom-viewer-3.1.0.tgz && npm pack",
+    "prepareDebug": "rimraf built && mkdir built && tsc --sourceMap",
+    "packDebug": "rimraf react-native-image-zoom-viewer-3.1.0.tgz && npm pack --source-map",
     "start": "tsc -w --outDir built"
   },
   "repository": {
@@ -18,7 +21,7 @@
   "author": "ascoders",
   "license": "MIT",
   "dependencies": {
-    "@likashefqet/react-native-image-zoom": "^4.0.0",
+    "@likashefqet/react-native-image-zoom": "^3.0.0",
     "react-native-reanimated": "^3.10.1"
   },
   "peerDependencies": {

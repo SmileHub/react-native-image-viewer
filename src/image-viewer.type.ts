@@ -109,7 +109,7 @@ export class Props {
    */
   public pageAnimateTime?: number = 100;
 
-  /** 
+  /**
    * 是否启用原生动画驱动
    * Whether to use the native code to perform animations.
    */
@@ -162,7 +162,7 @@ export class Props {
    * Custom Header
    */
   public renderHeader?: (currentIndex?: number) => React.ReactElement<any> = () => {
-    return null as any;
+    return React.createElement(View, null);
   };
 
   /**
@@ -170,7 +170,7 @@ export class Props {
    * Custom footer
    */
   public renderFooter?: (currentIndex: number) => React.ReactElement<any> = () => {
-    return null as any;
+    return React.createElement(View, null);
   };
 
   /**
@@ -200,7 +200,7 @@ export class Props {
    * Customize the left page button
    */
   public renderArrowLeft?: () => React.ReactElement<any> = () => {
-    return null as any;
+    return React.createElement(View, null);
   };
 
   /**
@@ -208,7 +208,7 @@ export class Props {
    * Customize the right page button
    */
   public renderArrowRight?: () => React.ReactElement<any> = () => {
-    return null as any;
+    return React.createElement(View, null);
   };
 
   /**

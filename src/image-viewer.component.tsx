@@ -98,10 +98,10 @@ export default class ImageViewer extends React.Component<Props, State> {
     // 给 imageSizes 塞入空数组
     // EN: Insert an empty array into imageSizes
     const imageSizes: IImageSize[] = [];
-    nextProps.imageUrls.forEach(imageUrl => {
+    nextProps.imageUrls.forEach((imageUrl, idx) => {
       imageSizes.push({
         width: imageUrl.width || 0,
-        height: imageUrl.height || 0,
+        height: imageUrl?.height || 0,
         status: 'loading'
       });
     });
@@ -480,18 +480,34 @@ export default class ImageViewer extends React.Component<Props, State> {
     }
   };
 
-  /**
-   * 获得整体内容
-   * EN: Get the overall content
-   */
-  public getContent() { //todo: possible optimization
-    // EN: Get the entire content
-    // 获得屏幕宽高
-    // EN: Get screen width and height
+  public ImageZoomWrapper = ({ children, index, ...others }: any) => ( //todo: possible optimization
+    <ImageZoom
+      cropWidth={this.width}
+      cropHeight={this.height}
+      maxOverflow={this.props.maxOverflow}
+      horizontalOuterRangeOffset={this.handleHorizontalOuterRangeOffset}
+      responderRelease={this.handleResponderRelease}
+      onMove={this.props.onMove}
+      onLongPress={this.handleLongPressWithIndex.get(index)}
+      onClick={this.handleClick}
+      onDoubleClick={this.handleDoubleClick}
+      enableSwipeDown={this.props.enableSwipeDown}
+      swipeDownThreshold={this.props.swipeDownThreshold}
+      onSwipeDown={this.handleSwipeDown}
+      pinchToZoom={this.props.enableImageZoom}
+      enableDoubleClickZoom={this.props.enableImageZoom}
+      doubleClickInterval={this.props.doubleClickInterval}
+      {...others}
+    >
+      {children}
+    </ImageZoom>
+  );
+
+  public getImageElements = () => {
     const screenWidth = this.width;
     const screenHeight = this.height;
 
-    const ImageElements = this.props.imageUrls.map((image, index) => {
+    return this.props.imageUrls.map((image, index) => {
       if ((this.state.currentShowIndex || 0) > index + 1 || (this.state.currentShowIndex || 0) < index - 1) {
         return <View key={index} style={{ width: screenWidth, height: screenHeight }} />;
       }
@@ -524,47 +540,21 @@ export default class ImageViewer extends React.Component<Props, State> {
         height *= HeightPixel;
       }
 
-      const Wrapper = ({ children, ...others }: any) => ( //todo: possible optimization
-        <ImageZoom
-          cropWidth={this.width}
-          cropHeight={this.height}
-          maxOverflow={this.props.maxOverflow}
-          horizontalOuterRangeOffset={this.handleHorizontalOuterRangeOffset}
-          responderRelease={this.handleResponderRelease}
-          onMove={this.props.onMove}
-          onLongPress={this.handleLongPressWithIndex.get(index)}
-          onClick={this.handleClick}
-          onDoubleClick={this.handleDoubleClick}
-          enableSwipeDown={this.props.enableSwipeDown}
-          swipeDownThreshold={this.props.swipeDownThreshold}
-          onSwipeDown={this.handleSwipeDown}
-          pinchToZoom={this.props.enableImageZoom}
-          enableDoubleClickZoom={this.props.enableImageZoom}
-          doubleClickInterval={this.props.doubleClickInterval}
-          {...others}
-        >
-          {children}
-        </ImageZoom>
-      );
-
-
       switch (imageInfo.status) {
         case 'loading':
           return (
-            <Wrapper
+            <View
               key={index}
               style={{
                 ...this.styles.modalContainer,
                 ...this.styles.loadingContainer
               }}
-              imageWidth={screenWidth}
-              imageHeight={screenHeight}
             >
               <View style={this.styles.loadingContainer}>{this!.props!.loadingRender!()}</View>
-              // 这里可能会造成多次渲染，建议检查 loadingRender 的实现
-              // EN: This might cause multiple renderings; it's recommended to check the implementation of
-              loadingRender.
-            </Wrapper>
+              {/*这里可能会造成多次渲染，建议检查 loadingRender 的实现*/}
+              {/*EN: This might cause multiple renderings;*/}
+              {/*it's recommended to check the implementation of loadingRender.*/}
+            </View>
           );
         case 'success':
           if (!image.props) {
@@ -599,6 +589,8 @@ export default class ImageViewer extends React.Component<Props, State> {
             // 这里可能会导致性能问题，检查是否需要对所有图片进行预加载
             // EN: This might cause performance issues; check if preloading all images is necessary.
           }
+          // return <View key={index}><Text style={{color: "white"}}>success</Text></View>
+
           return (
             // @ts-ignore - because typescript complains ImageZoom not supporting children!
             // todo: lots of refactoring to move away from ImageZoom
@@ -651,9 +643,9 @@ export default class ImageViewer extends React.Component<Props, State> {
               doubleClickInterval={this.props.doubleClickInterval}
               minScale={this.props.minScale}
               maxScale={this.props.maxScale}
-            >
-              {this!.props!.customRender!(image.props)}
-            </ImageZoom>
+              {...image.props}
+            />
+              // {this!.props!.customRender!(image.props)} //used to be inside as childe node
           );
         case 'fail':
           const {
@@ -666,14 +658,16 @@ export default class ImageViewer extends React.Component<Props, State> {
             height: undefined,
             url: undefined
           };
-          return (
-            <Wrapper
-              key={index}
-              style={this.styles.modalContainer}
-              imageWidth={imgWidth ? imgWidth : screenWidth}
-              imageHeight={imgHeight ? imgHeight : screenHeight}
-            >
-              {this.props.failImageSource &&
+          // return (
+            // <this.ImageZoomWrapper
+            //   key={index}
+            //   index={index}
+            //   style={this.styles.modalContainer}
+            //   imageWidth={imgWidth ? imgWidth : screenWidth}
+            //   imageHeight={imgHeight ? imgHeight : screenHeight}
+            // >
+            //   {
+                return this.props.failImageSource &&
                 this!.props!.customRender!({
                   source: {
                     uri: url
@@ -684,12 +678,21 @@ export default class ImageViewer extends React.Component<Props, State> {
                   },
                   ...other //to support additional props
                 })
-              }
-            </Wrapper>
-          );
+              // }
+            // </this.ImageZoomWrapper>
+          // );
       }
     });
+  };
 
+  /**
+   * 获得整体内容
+   * EN: Get the overall content
+   */
+  public getContent() { //todo: possible optimization
+    // EN: Get the entire content
+    // 获得屏幕宽高
+    // EN: Get screen width and height
     return (
       <Animated.View style={{ zIndex: 9 }}>
         <Animated.View style={{ ...this.styles.container, opacity: this.fadeAnim }}>
@@ -720,8 +723,10 @@ export default class ImageViewer extends React.Component<Props, State> {
               width: this.width * this.props.imageUrls.length
             }}
           >
-            {ImageElements} {/* 注意可能会导致子元素的性能问题 */}
-            {/* EN: Note potential performance issues with child elements */}
+            {this.getImageElements()}
+            {/*<View style={{ width: 50, height: 50, backgroundColor: 'blue' }} />*/}
+            {/* 注意可能会导致子元素的性能问题 */}
+            {/* EN: Note potential performance issues with child elements*/}
           </Animated.View>
           {this!.props!.renderIndicator!((this.state.currentShowIndex || 0) + 1, this.props.imageUrls.length)}
           {/* 检查 renderIndicator 的实现，以确保不会产生不必要的重新渲染 */}

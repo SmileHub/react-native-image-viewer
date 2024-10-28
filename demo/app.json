@@ -1,5 +1,7 @@
 {
   "expo": {
-    "sdkVersion": "51.0.0"
+    "sdkVersion": "51.0.0",
+    "name": "Demo",
+    "slug": "demo"
   }
 }

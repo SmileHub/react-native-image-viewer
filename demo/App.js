@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { View, Modal, TouchableNativeFeedback, Text } from 'react-native';
-import ImageViewer from '../built/index';
+// import ImageViewer from '../built/index';
+import ImageViewer from "react-native-image-zoom-viewer";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const images = [
   {
@@ -29,35 +31,35 @@ const images = [
   }
 ];
 
-export default class Main extends Component {
-  state = {
+const App = () => {
+  const [state, setState] = useState({
     index: 0,
     modalVisible: true
-  };
+  });
 
-  render() {
-    return (
-      <View
-        style={{
-          padding: 10
-        }}
+  return  <GestureHandlerRootView style={{ flex: 1 }}>
+    <View
+      style={{
+        padding: 10
+      }}
+    >
+      <Modal
+        visible={state.modalVisible}
+        transparent={true}
+        onRequestClose={() => setState({ ...state, modalVisible: false })}
       >
-        <Modal
-          visible={this.state.modalVisible}
-          transparent={true}
-          onRequestClose={() => this.setState({ modalVisible: false })}
-        >
-          <ImageViewer
-            imageUrls={images}
-            index={this.state.index}
-            onSwipeDown={() => {
-              console.log('onSwipeDown');
-            }}
-            onMove={data => console.log(data)}
-            enableSwipeDown={true}
-          />
-        </Modal>
-      </View>
-    );
-  }
-}
+        <ImageViewer
+          imageUrls={images}
+          index={state.index}
+          onSwipeDown={() => {
+            console.log('onSwipeDown');
+          }}
+          onMove={data => console.log(data)}
+          enableSwipeDown={true}
+        />
+      </Modal>
+    </View>
+  </GestureHandlerRootView>;
+};
+
+export default App;
