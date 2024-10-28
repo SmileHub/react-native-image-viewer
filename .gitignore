@@ -1,2 +1,6 @@
 node_modules
 built
+*.lock
+*.tgz
+.idea
+package-lock.json
